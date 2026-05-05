@@ -1,75 +1,83 @@
-🚁 Tello Gesture Control
-Control your DJI Tello drone in real-time using hand gestures captured via your computer's webcam or the drone's video stream. This project combines computer vision (MediaPipe), machine learning, and Tello's Python API to provide a seamless, touch-free piloting experience.
+🚁 Tello Gesture Control System
 
-🚀 Features
-Dual Control Modes: Switch between Keyboard and Gesture controls mid-flight.  
+A real-time, vision-based control system for the DJI Tello drone that enables touch-free piloting using hand gestures.
+Built using MediaPipe, TensorFlow, and OpenCV, the system focuses on low-latency inference, control stability, and safety.
 
-Real-time Gesture Recognition: Uses Google's MediaPipe framework for fast and accurate hand landmark detection.  
+🎯 Key Highlights
+Real-Time Gesture Control
+Hand gestures are processed and mapped to drone commands with minimal delay.
+Dual Control System
+Seamless switching between manual keyboard input and gesture-based control during flight.
+Safety-First Design
+Command buffering to prevent jitter
+Neutral gesture triggers hover state
+Emergency keyboard override
+Live Telemetry HUD
+Displays battery status, connection health, and active command state.
+🧠 System Architecture
 
-Flight Telemetry Display: A Heads-Up Display (HUD) showing battery level, drone connection, and active commands.  
+Camera Input → MediaPipe (Hand Tracking) → Feature Extraction → TensorFlow Lite Model → Gesture Classification → Command Mapping → Tello API → Drone Movement
 
-Safety Features: Includes hover states and buffering to prevent accidental maneuvers.
-
-🛠 Prerequisites & Requirements
-Make sure you are using Python 3.7 or higher.
-
-Dependencies
-Install the required Python packages using:
+⚙️ Pipeline Breakdown
+Hand Detection:
+MediaPipe extracts 21 keypoints per frame.
+Feature Engineering:
+Keypoints are normalized and converted into relative coordinate vectors.
+Gesture Classification:
+A lightweight TensorFlow Lite (.tflite) model predicts gesture classes.
+Command Execution:
+Commands are sent via djitellopy to control the drone.
+⚙️ Performance Considerations
+Optimized for real-time CPU inference
+Temporal smoothing reduces false positives
+Gesture buffering prevents rapid oscillations
+Handles unstable Wi-Fi latency from Tello stream
+🎮 Controls
+Keyboard Mode
+Key	Action
+w / s	Forward / Back
+a / d	Left / Right
+r / f	Up / Down
+q / e	Rotate
+Space	Takeoff / Land
+Esc	Exit and Land
+Gesture Mode
+Switch using g
+Perform predefined gestures (UP, DOWN, LEFT, RIGHT, etc.)
+Easily extendable via custom training
+🤖 Custom Gesture Training
+Run main.py
+Press n to enable logging mode
+Capture gesture samples using keys (0–9)
+Data is saved to:
+model/keypoint_classifier/keypoint.csv
+Open Keypoint_model_training.ipynb
+Train and export new .tflite model
+⚠️ Challenges & Limitations
+Sensitive to lighting conditions
+Gesture misclassification under occlusion
+Network latency affects responsiveness
+Limited gesture vocabulary (depends on training data)
+🚀 Future Improvements
+Add temporal models (LSTM / Transformer)
+Improve gesture confidence thresholding
+Multi-hand gesture support
+Edge deployment on embedded devices
+🛠 Tech Stack
+Python
+MediaPipe
+TensorFlow / TensorFlow Lite
+OpenCV
+djitellopy
+🔌 Setup
+Turn on the Tello drone
+Connect to Wi-Fi (TELLO-XXXXXX)
+Install dependencies:
 pip install -r requirements.txt
-
-Note: Primary packages used include djitellopy, mediapipe, tensorflow, and opencv-python.
-
-🔌 Setup & Connection
-Turn on the Tello drone.
-
-Connect your computer to the Tello's Wi-Fi network (e.g., TELLO-XXXXXX).
-
-Verify connectivity by running the connection test:
-Bash
+Test connection:
 python3 tests/connection_test.py
-Expect the response b'ok' for commands and the video stream.
 
-🎮 Usage
-Run the main script to start the control window:
+(Expected output: ok)
 
-Bash
+▶️ Run the Project
 python3 main.py
-Keyboard Controls
-Once the program is running, press the following keys for actions:
-
-k — Toggle Keyboard controls mode
-
-g — Toggle Gesture controls mode
-
-Space — Take off (if landed) or Land (if in flight)
-
-w / s — Move forward / Move back
-
-a / d — Move left / Move right
-
-r / f — Move up / Move down
-
-e / q — Rotate clockwise / Rotate counter-clockwise
-
-Esc — End program and safely land the drone
-
-Gesture Controls
-Press g to switch to gesture mode. Point your hand to the camera based on your trained gestures (e.g., UP pose, LEFT, RIGHT).
-
-🤖 Model Training (Adding Custom Gestures)
-If you want to add or train your own gestures:
-
-Launch the logger by running main.py and pressing "n" to log key points.
-
-Assign a class ID (keys 0–9) to capture points, which updates model/keypoint_classifier/keypoint.csv.
-
-Retrain the model by opening Keypoint_model_training.ipynb in Jupyter Notebook or Google Colab, updating the class count, and running all cells. Export the new .tflite model.
-
-🤖 Model Training (Adding Custom Gestures)
-If you want to add or train your own gestures:
-
-Launch the logger by running main.py and pressing "n" to log key points.
-
-Assign a class ID (keys 0–9) to capture points, which updates model/keypoint_classifier/keypoint.csv.
-
-Retrain the model by opening Keypoint_model_training.ipynb in Jupyter Notebook or Google Colab, updating the class count, and running all cells. Export the new .tflite model.
