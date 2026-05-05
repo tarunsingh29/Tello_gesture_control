@@ -126,16 +126,15 @@ Command Mapping → Tello API → Drone Movement
 
 ### Install Dependencies
 
-```bash
 pip install -r requirements.txt
-```bash
 
-Test Connection:
-```bash
+
+### Test Connection:
+
 python3 tests/connection_test.py
-```bash
 
-▶️ Run the Project:
-```bash
+
+### ▶️ Run the Project:
+
 python3 main.py
-```bash
+
